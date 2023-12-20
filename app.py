@@ -27,7 +27,7 @@ def generate_unique_task_id():
 
 def process_audio(file_path, task_id):
     try:
-        transcripts = asyncio.run(dg.main_transcription(file_path))
+        transcripts = asyncio.run(dg.main_transcription())
         response = gpt.gpt_response(transcripts)
 
         # Store response in MongoDB
