@@ -7,11 +7,6 @@ load_dotenv()
 # Your Deepgram API Key
 DEEPGRAM_API_KEY = os.environ.get('DEEPGRAM_API_KEY')
 
-# MongoDB setup
-MONGO_DB_URI = os.environ.get("MONGO_DB_URI")
-MONGO_DB_NAME = os.environ.get("MONGO_DB_NAME")
-MONGO_DB_COLLECTION = os.environ.get("MONGO_DB_COLLECTION")
-
 # Folders for storing recordings and transcripts
 FOLDER_PATH = 'recordings'
 TRANSCRIPTIONS_FOLDER = 'transcriptions'
@@ -59,17 +54,9 @@ def move_processed_file(filename):
         os.makedirs(COMPLETED_FOLDER)
     shutil.move(os.path.join(FOLDER_PATH, filename), os.path.join(COMPLETED_FOLDER, filename))
 
-# # Function to update MongoDB entry
-# def update_mongodb_entry(filename, client):
-#     db = client[MONGO_DB_NAME]
-#     collection = db[MONGO_DB_COLLECTION]
-#     result = collection.update_one({'file_name': filename}, {'$set': {'status': 'processed'}})
-#     print(f"Updated MongoDB entry for {filename}: {result.modified_count} document(s) updated.")
-
 # Async main function
 async def main_transcription():
     deepgram = Deepgram(DEEPGRAM_API_KEY)
-    # client = MongoClient(MONGO_DB_URI)
     transcripts = {}
 
     # Iterating over each file in the folder
@@ -112,5 +99,4 @@ async def main_transcription():
                 except Exception as e:
                     print(f"Error transcribing {filename}: {e}")
 
-    client.close()
     return transcripts
