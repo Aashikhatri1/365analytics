@@ -3,3 +3,4 @@ pymongo
 deepgram-sdk
 python-dotenv
 openai==0.28
+gunicorn
