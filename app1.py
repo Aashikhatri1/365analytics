@@ -18,12 +18,22 @@ S3_BUCKET_NAME = os.environ.get("S3_BUCKET_NAME")
 # Set up AWS S3 client
 s3_client = boto3.client('s3', aws_access_key_id=AWS_ACCESS_KEY, aws_secret_access_key=AWS_SECRET_KEY)
 
-def upload_to_s3(file_name, content):
+# def upload_to_s3(file_name, content):
+#     try:
+#         s3_client.put_object(Bucket=S3_BUCKET_NAME, Key=file_name, Body=content)
+#         return True
+#     except NoCredentialsError:
+#         return False
+
+def upload_to_s3(file_path, task_id):
     try:
-        s3_client.put_object(Bucket=S3_BUCKET_NAME, Key=file_name, Body=content)
+        # Open the file in binary read mode
+        with open(file_path, 'rb') as file:
+            s3_client.put_object(Bucket=S3_BUCKET_NAME, Key=f"{task_id}.txt", Body=file)
         return True
     except NoCredentialsError:
         return False
+
 
 def process_audio(file_path, task_id):
     try:
