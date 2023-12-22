@@ -27,6 +27,7 @@ s3_client = boto3.client('s3', aws_access_key_id=AWS_ACCESS_KEY, aws_secret_acce
 
 def upload_to_s3(file_path, task_id):
     try:
+        file_path = f"{task_id}.txt"
         # Open the file in binary read mode
         with open(file_path, 'rb') as file:
             s3_client.put_object(Bucket=S3_BUCKET_NAME, Key=f"{task_id}.txt", Body=file)
