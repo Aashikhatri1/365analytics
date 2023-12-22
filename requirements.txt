@@ -1,6 +1,6 @@
 Flask
 pymongo
-deepgram-sdk
+deepgram-sdk==2.11.0
 python-dotenv
 openai==0.28
 gunicorn
