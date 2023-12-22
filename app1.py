@@ -40,7 +40,7 @@ def process_audio(file_path, task_id):
     try:
         diarization_result = asyncio.run(dg.main_transcription())
         result_file_name = f"{task_id}.txt"
-        upload_to_s3(result_file_name, diarization_result)
+        upload_to_s3(result_file_name, task_id)
     except Exception as e:
         error_file_name = f"{task_id}_error.txt"
         upload_to_s3(error_file_name, str(e))
