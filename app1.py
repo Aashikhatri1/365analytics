@@ -11,9 +11,9 @@ app = Flask(__name__)
 tasks = {}
 
 # AWS S3 setup
-AWS_ACCESS_KEY = os.environ.get("AKIAVSYBEZQGJVFUUK6A")
-AWS_SECRET_KEY = os.environ.get("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")
-S3_BUCKET_NAME = os.environ.get("salescrm247")
+AWS_ACCESS_KEY = os.environ.get("AWS_ACCESS_KEY")
+AWS_SECRET_KEY = os.environ.get("AWS_SECRET_KEY")
+S3_BUCKET_NAME = os.environ.get("S3_BUCKET_NAME")
 
 # Set up AWS S3 client
 s3_client = boto3.client('s3', aws_access_key_id=AWS_ACCESS_KEY, aws_secret_access_key=AWS_SECRET_KEY)
