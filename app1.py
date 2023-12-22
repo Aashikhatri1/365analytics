@@ -54,10 +54,33 @@ def upload_to_s3(file_path, task_id):
     except NoCredentialsError:
         return False
 
+# def process_audio(file_path, task_id):
+#     try:
+#         diarization_result = asyncio.run(dg.main_transcription())
+#         result_file_name = f"{task_id}.txt"
+
+#         # Write the response to a text file
+#         with open(result_file_name, 'w') as file:
+#             file.write(diarization_result)
+
+#         # Call upload_to_s3 with the path of the newly created file
+#         upload_to_s3(result_file_name, task_id)
+#     except Exception as e:
+#         error_file_name = f"{task_id}_error.txt"
+#         with open(error_file_name, 'w') as file:
+#             file.write(str(e))
+#         upload_to_s3(error_file_name, task_id)
+
+import json
+
 def process_audio(file_path, task_id):
     try:
         diarization_result = asyncio.run(dg.main_transcription())
         result_file_name = f"{task_id}.txt"
+
+        # Convert the dictionary to a JSON string if it's not a string
+        if not isinstance(diarization_result, str):
+            diarization_result = json.dumps(diarization_result, indent=4)
 
         # Write the response to a text file
         with open(result_file_name, 'w') as file:
@@ -70,6 +93,7 @@ def process_audio(file_path, task_id):
         with open(error_file_name, 'w') as file:
             file.write(str(e))
         upload_to_s3(error_file_name, task_id)
+
 
 
 @app.route('/upload', methods=['POST'])
