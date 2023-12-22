@@ -25,25 +25,52 @@ s3_client = boto3.client('s3', aws_access_key_id=AWS_ACCESS_KEY, aws_secret_acce
 #     except NoCredentialsError:
 #         return False
 
+# def upload_to_s3(file_path, task_id):
+#     try:
+#         file_path = f"{task_id}.txt"
+#         # Open the file in binary read mode
+#         with open(file_path, 'rb') as file:
+#             s3_client.put_object(Bucket=S3_BUCKET_NAME, Key=f"{task_id}.txt", Body=file)
+#         return True
+#     except NoCredentialsError:
+#         return False
+
+
+# def process_audio(file_path, task_id):
+#     try:
+#         diarization_result = asyncio.run(dg.main_transcription())
+#         result_file_name = f"{task_id}.txt"
+#         upload_to_s3(result_file_name, task_id)
+#     except Exception as e:
+#         error_file_name = f"{task_id}_error.txt"
+#         upload_to_s3(error_file_name, str(e))
+
 def upload_to_s3(file_path, task_id):
     try:
-        file_path = f"{task_id}.txt"
-        # Open the file in binary read mode
+        # Upload the file at 'file_path' to S3
         with open(file_path, 'rb') as file:
             s3_client.put_object(Bucket=S3_BUCKET_NAME, Key=f"{task_id}.txt", Body=file)
         return True
     except NoCredentialsError:
         return False
 
-
 def process_audio(file_path, task_id):
     try:
         diarization_result = asyncio.run(dg.main_transcription())
         result_file_name = f"{task_id}.txt"
+
+        # Write the response to a text file
+        with open(result_file_name, 'w') as file:
+            file.write(diarization_result)
+
+        # Call upload_to_s3 with the path of the newly created file
         upload_to_s3(result_file_name, task_id)
     except Exception as e:
         error_file_name = f"{task_id}_error.txt"
-        upload_to_s3(error_file_name, str(e))
+        with open(error_file_name, 'w') as file:
+            file.write(str(e))
+        upload_to_s3(error_file_name, task_id)
+
 
 @app.route('/upload', methods=['POST'])
 def upload_file():
