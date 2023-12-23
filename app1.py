@@ -160,7 +160,7 @@ def upload_file():
         return jsonify({'error': 'No selected file'}), 400
 
     # Retrieve the task ID from the request
-    task_id = request.form.get('task_id')
+    task_id = request.form.get('id')
     if not task_id:
         return jsonify({'error': 'Task ID is required'}), 400
 
