@@ -145,7 +145,7 @@ tasks = {}
 
 def process_audio(file_path, task_id):
     try:
-        transcripts = asyncio.run(dg.main_transcription(file_path))  # Assuming the transcription function needs the file path
+        transcripts = asyncio.run(dg.main_transcription()) 
         tasks[task_id] = {'result': transcripts}
     except Exception as e:
         tasks[task_id] = {'result': str(e)}
