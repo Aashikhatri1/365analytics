@@ -80,9 +80,9 @@ def download_file(url, local_path):
         with open(local_path, 'wb') as f:
             f.write(response.content)
 
-def process_audio(file_path, task_id):
+def process_audio(filename, task_id):
     try:
-        transcripts = asyncio.run(dg.main_transcription()) 
+        transcripts = asyncio.run(dg.main_transcription(filename)) 
         tasks[task_id] = {'result': transcripts}
     except Exception as e:
         tasks[task_id] = {'result': str(e)}
@@ -104,12 +104,12 @@ def upload_recording_url():
     file_name = os.path.basename(parsed_url.path)
     _, file_extension = os.path.splitext(file_name)
 
-    local_filename = os.path.join('recordings', f"{task_id}{file_extension}")
-    download_file(file_url, local_filename)
-
+    filepath = os.path.join('recordings', f"{task_id}{file_extension}")
+    download_file(file_url, filepath)
+    filename = f"{task_id}{file_extension}"
     tasks[task_id] = {'result': None}
 
-    thread = threading.Thread(target=process_audio, args=(local_filename, task_id))
+    thread = threading.Thread(target=process_audio, args=(filename, task_id))
     thread.start()
 
     return jsonify({'task_id': task_id}), 202
@@ -134,9 +134,9 @@ def upload_file():
         _, file_extension = os.path.splitext(file.filename)
 
         # Use task_id as the name but keep the original extension
-        filename = os.path.join('recordings', f"{task_id}{file_extension}")
-        file.save(filename)
-
+        filepath = os.path.join('recordings', f"{task_id}{file_extension}")
+        file.save(filepath)
+        filename = f"{task_id}{file_extension}"
         tasks[task_id] = {'result': None}
 
         thread = threading.Thread(target=process_audio, args=(filename, task_id))
