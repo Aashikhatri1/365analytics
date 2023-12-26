@@ -5,3 +5,4 @@ python-dotenv
 openai==0.28
 gunicorn
 boto3
+requests
