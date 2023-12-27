@@ -74,6 +74,16 @@ import os.path
 app = Flask(__name__)
 tasks = {}
 
+# MongoDB setup
+MONGO_DB_URI = os.environ.get("MONGO_DB_URI")
+MONGO_DB_NAME = os.environ.get("MONGO_DB_NAME")
+MONGO_DB_COLLECTION = os.environ.get("MONGO_DB_COLLECTION")
+
+# Set up MongoDB connection
+client = MongoClient(MONGO_DB_URI)
+db = client[MONGO_DB_NAME]
+collection = db[MONGO_DB_COLLECTION]
+
 def download_file(url, local_path):
     response = requests.get(url)
     if response.status_code == 200:
@@ -99,7 +109,10 @@ def upload_recording_url():
 
     if not task_id:
         return jsonify({'error': 'ID is required'}), 400
-
+        
+    # Insert into MongoDB
+    collection.insert_one({"file": file_url, "id": task_id, "type": file_type})
+    
     parsed_url = urlparse(file_url)
     file_name = os.path.basename(parsed_url.path)
     _, file_extension = os.path.splitext(file_name)
