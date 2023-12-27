@@ -95,7 +95,7 @@ def upload_recording_url():
 
     file_url = data['file']
     task_id = data.get('id')
-    file_type = data.get('type', 'call recording')  # Default to 'call recording' if not provided
+    file_type = data.get('type')  
 
     if not task_id:
         return jsonify({'error': 'ID is required'}), 400
