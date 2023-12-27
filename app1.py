@@ -145,17 +145,41 @@ def upload_file():
         return jsonify({'task_id': task_id}), 202
 
 
-@app.route('/result/<task_id>', methods=['GET'])
-def get_result(task_id):
+# adding 'type' parameter
+@app.route('/result/<task_id>/<task_type>', methods=['GET'])
+def get_result(task_id, task_type):
     if task_id not in tasks:
         return jsonify({'error': 'Invalid task ID'}), 404
 
+    # Check if the task_type is valid
+    if task_type not in ['callRecording', 'meeting']:
+        return jsonify({'error': 'Invalid task type'}), 400
+
     result = tasks[task_id]
 
+    # Check if the task type matches
+    if result.get('type') != task_type:
+        return jsonify({'error': 'Task type does not match'}), 400
+
     if 'result' not in result or result['result'] is None:
-        return jsonify({'status': 'Processing'}), 202
+        return jsonify({'status': 'Processing', 'type': task_type}), 202
     else:
-        return jsonify({'result': result['result']}), 200
+        return jsonify({'result': result['result'], 'type': task_type}), 200
 
 if __name__ == '__main__':
     app.run(debug=True)
+
+# @app.route('/result/<task_id>', methods=['GET'])
+# def get_result(task_id):
+#     if task_id not in tasks:
+#         return jsonify({'error': 'Invalid task ID'}), 404
+
+#     result = tasks[task_id]
+
+#     if 'result' not in result or result['result'] is None:
+#         return jsonify({'status': 'Processing'}), 202
+#     else:
+#         return jsonify({'result': result['result']}), 200
+
+# if __name__ == '__main__':
+#     app.run(debug=True)
