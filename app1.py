@@ -77,7 +77,7 @@ tasks = {}
 # MongoDB setup
 MONGO_DB_URI = os.environ.get("MONGO_DB_URI")
 MONGO_DB_NAME = os.environ.get("MONGO_DB_NAME")
-MONGO_DB_COLLECTION = os.environ.get("MONGO_DB_COLLECTION")
+MONGO_DB_COLLECTION = os.environ.get("MONGO_DB_COLLECTION_REC")
 
 # Set up MongoDB connection
 client = MongoClient(MONGO_DB_URI)
@@ -157,6 +157,21 @@ def upload_file():
 
         return jsonify({'task_id': task_id}), 202
 
+@app.route('/result/<task_id>', methods=['GET'])
+def get_result(task_id):
+    if task_id not in tasks:
+        return jsonify({'error': 'Invalid task ID'}), 404
+
+    result = tasks[task_id]
+
+    if 'result' not in result or result['result'] is None:
+        return jsonify({'status': 'Processing'}), 202
+    else:
+        return jsonify({'result': result['result']}), 200
+
+if __name__ == '__main__':
+    app.run(debug=True)
+
 
 # # adding 'type' parameter
 # @app.route('/result/<task_id>/<task_type>', methods=['GET'])
@@ -181,18 +196,3 @@ def upload_file():
 
 # if __name__ == '__main__':
 #     app.run(debug=True)
-
-@app.route('/result/<task_id>', methods=['GET'])
-def get_result(task_id):
-    if task_id not in tasks:
-        return jsonify({'error': 'Invalid task ID'}), 404
-
-    result = tasks[task_id]
-
-    if 'result' not in result or result['result'] is None:
-        return jsonify({'status': 'Processing'}), 202
-    else:
-        return jsonify({'result': result['result']}), 200
-
-if __name__ == '__main__':
-    app.run(debug=True)
