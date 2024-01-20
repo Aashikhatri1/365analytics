@@ -122,7 +122,7 @@ def meeting_url():
         return jsonify({"error": "Missing data"}), 400
 
     # Insert data into MongoDB
-    collection_meeting.insert_one({"link": link, "id": id})
+    collection_meeting.insert_one({"link": link, "id": id, "status": "submitted"})
 
     return jsonify({"message": "Data stored successfully"}), 201
 
